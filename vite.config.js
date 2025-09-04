@@ -8,4 +8,7 @@ export default defineConfig({
   // then the base should be '/my-repo/'.
   base: '/temp-project/',
   plugins: [preact()],
+  build: {
+    outDir: 'build',
+  },
 })
