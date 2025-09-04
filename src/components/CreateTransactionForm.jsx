@@ -56,20 +56,20 @@ export function CreateTransactionForm({ participants, onTransactionAdd }) {
     <form onSubmit={handleSubmit}>
       {error && <div class="notification is-danger">{error}</div>}
       <div class="field">
-        <label class="label">Description</label>
+        <label class="label" for="description">Description</label>
         <div class="control">
-          <input class="input" type="text" value={description} onInput={e => setDescription(e.target.value)} />
+          <input class="input" id="description" type="text" value={description} onInput={e => setDescription(e.target.value)} />
         </div>
       </div>
       <div class="field">
-        <label class="label">Total Amount</label>
+        <label class="label" for="total">Total Amount</label>
         <div class="control">
-          <input class="input" type="number" value={total} onInput={e => setTotal(parseFloat(e.target.value) || 0)} />
+          <input class="input" id="total" type="number" step="any" value={total} onInput={e => setTotal(parseFloat(e.target.value) || 0)} />
         </div>
       </div>
 
       <div class="field">
-        <label class="label">Paid by</label>
+        <label class="label" id="paid-by-label">Paid by</label>
         {participants.map(participant => (
           <div class="field has-addons" key={participant.id}>
             <p class="control">
@@ -79,6 +79,8 @@ export function CreateTransactionForm({ participants, onTransactionAdd }) {
               <input
                 class="input"
                 type="number"
+                step="any"
+                aria-labelledby="paid-by-label"
                 value={payers.find(p => p.participantId === participant.id)?.amount || 0}
                 onInput={e => handlePayerChange(participant.id, e.target.value)}
               />
