@@ -38,40 +38,45 @@ export function GroupView({ group, onBack }) {
   };
 
   return (
-    <section class="section">
-      <div class="level">
-        <div class="level-left">
-          <h2 class="title is-4">Group: {group.name}</h2>
+    <div class="container">
+      <section class="section">
+        <div class="level">
+          <div class="level-left">
+            <h2 class="title is-4">Group: {group.name}</h2>
+          </div>
+          <div class="level-right">
+            <button class="button" onClick={onBack}>
+              Back to Groups
+            </button>
+          </div>
         </div>
-        <div class="level-right">
-          <button class="button" onClick={onBack}>
-            Back to Groups
-          </button>
-        </div>
-      </div>
 
-      <div class="columns">
-        <div class="column is-one-third">
-          <h3 class="title is-5">Participants</h3>
-          <AddParticipantForm onParticipantAdd={handleParticipantAdd} />
-          <div class="mt-4">
-            <ParticipantList participants={participants} onParticipantRemove={handleParticipantRemove} />
+        <div class="columns">
+          <div class="column is-one-third">
+            <h3 class="title is-5">Participants</h3>
+            <AddParticipantForm onParticipantAdd={handleParticipantAdd} />
+            <div class="mt-4">
+              <ParticipantList participants={participants} onParticipantRemove={handleParticipantRemove} />
+            </div>
+            <div class="mt-4">
+              <h3 class="title is-5">Add Transaction</h3>
+              <CreateTransactionForm participants={participants} onTransactionAdd={handleTransactionAdd} />
+            </div>
+          </div>
+          <div class="column">
+            <h3 class="title is-5">Transactions</h3>
+            <div class="mt-4">
+              <TransactionList transactions={transactions} />
+            </div>
+            <div class="mt-4">
+              <BalanceList balances={balances} participants={participants} />
+            </div>
+            <div class="mt-4">
+              <SettlementList settlements={settlements} participants={participants} />
+            </div>
           </div>
         </div>
-        <div class="column">
-          <h3 class="title is-5">Transactions</h3>
-          <CreateTransactionForm participants={participants} onTransactionAdd={handleTransactionAdd} />
-          <div class="mt-4">
-            <TransactionList transactions={transactions} />
-          </div>
-        </div>
-        <div class="column is-one-third">
-          <BalanceList balances={balances} participants={participants} />
-          <div class="mt-4">
-            <SettlementList settlements={settlements} participants={participants} />
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

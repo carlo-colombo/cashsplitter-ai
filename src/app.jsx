@@ -62,37 +62,41 @@ export function App() {
 
   return (
     <div class="container">
-      <section class="section">
-        <h1 class="title">Expense Splitter</h1>
-        <p class="subtitle">
-          Create groups and split expenses with your friends.
-        </p>
-        <div class="buttons">
-          <button class="button is-primary" onClick={handleExport}>
-            Export Data
-          </button>
-          <div class="file is-primary">
-            <label class="file-label">
-              <input class="file-input" type="file" name="resume" onChange={handleImport} accept=".json" />
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-upload"></i>
-                </span>
-                <span class="file-label">
-                  Import Data
-                </span>
-              </span>
-            </label>
-          </div>
+      <div class="columns is-centered">
+        <div class="column is-half">
+          <section class="section">
+            <h1 class="title">Expense Splitter</h1>
+            <p class="subtitle">
+              Create groups and split expenses with your friends.
+            </p>
+            <div class="buttons">
+              <button class="button is-primary" onClick={handleExport}>
+                Export Data
+              </button>
+              <div class="file is-primary">
+                <label class="file-label">
+                  <input class="file-input" type="file" name="resume" onChange={handleImport} accept=".json" />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                      Import Data
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </section>
+          <section class="section">
+            <h2 class="title is-4">My Groups</h2>
+            <CreateGroupForm onGroupCreate={handleGroupCreate} />
+            <div class="mt-4">
+              <GroupList groups={groups} onGroupSelect={handleGroupSelect} />
+            </div>
+          </section>
         </div>
-      </section>
-      <section class="section">
-        <h2 class="title is-4">My Groups</h2>
-        <CreateGroupForm onGroupCreate={handleGroupCreate} />
-        <div class="mt-4">
-          <GroupList groups={groups} onGroupSelect={handleGroupSelect} />
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
