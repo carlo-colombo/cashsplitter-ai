@@ -43,4 +43,38 @@ describe('CreateTransactionForm', () => {
       })
     );
   });
+
+  it('should reset the form after successful submission', async () => {
+    const handleTransactionAdd = vi.fn();
+    render(
+      <CreateTransactionForm
+        participants={participants}
+        onTransactionAdd={handleTransactionAdd}
+      />
+    );
+
+    // Fill out the form
+    const descriptionInput = screen.getByLabelText('Description');
+    await fireEvent.input(descriptionInput, { target: { value: 'Test Transaction' } });
+
+    const totalInput = screen.getByLabelText('Total Amount');
+    await fireEvent.input(totalInput, { target: { value: '100' } });
+
+    const payerInputs = screen.getAllByLabelText('Paid by');
+    await fireEvent.input(payerInputs[0], { target: { value: '100' } });
+
+    const beneficiaryCheckboxes = screen.getAllByRole('checkbox');
+    await fireEvent.click(beneficiaryCheckboxes[1]); // Uncheck Bob
+
+    // Submit the form
+    const submitButton = screen.getByText('Add Transaction');
+    await fireEvent.click(submitButton);
+
+    // Check that the form is reset
+    expect(descriptionInput.value).toBe('');
+    expect(totalInput.value).toBe('0');
+    expect(payerInputs[0].value).toBe('0');
+    expect(beneficiaryCheckboxes[0].checked).toBe(true);
+    expect(beneficiaryCheckboxes[1].checked).toBe(true);
+  });
 });
