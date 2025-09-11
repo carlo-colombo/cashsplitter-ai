@@ -19,7 +19,7 @@ export function GroupView() {
     return null;
   }
 
-  const { name, participants, transactions } = selectedGroup;
+  const { name } = selectedGroup;
 
   return (
     <div class="container">
