@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { Group } from './models/Group';
+import { Transaction } from './models/Transaction';
 import { CreateGroupForm } from './components/CreateGroupForm';
 import { GroupList } from './components/GroupList';
 import { GroupView } from './components/GroupView';
@@ -21,6 +22,45 @@ export function App() {
 
   const handleBackToGroups = () => {
     setSelectedGroup(null);
+  };
+
+  const handleParticipantAdd = (groupId, participantName) => {
+    const updatedGroups = groups.map(group => {
+      if (group.id === groupId) {
+        // In a real app, you might want to use a more robust way to
+        // update the group, e.g., by creating a new Group instance.
+        const updatedParticipants = [...group.participants, { id: crypto.randomUUID(), name: participantName }];
+        return { ...group, participants: updatedParticipants };
+      }
+      return group;
+    });
+    setGroups(updatedGroups);
+    setSelectedGroup(updatedGroups.find(g => g.id === groupId));
+  };
+
+  const handleParticipantRemove = (groupId, participantId) => {
+    const updatedGroups = groups.map(group => {
+      if (group.id === groupId) {
+        const updatedParticipants = group.participants.filter(p => p.id !== participantId);
+        return { ...group, participants: updatedParticipants };
+      }
+      return group;
+    });
+    setGroups(updatedGroups);
+    setSelectedGroup(updatedGroups.find(g => g.id === groupId));
+  };
+
+  const handleTransactionAdd = (groupId, { description, total, payers, beneficiaries }) => {
+    const updatedGroups = groups.map(group => {
+      if (group.id === groupId) {
+        const newTransaction = new Transaction(description, total, payers, beneficiaries);
+        const updatedTransactions = [...group.transactions, newTransaction];
+        return { ...group, transactions: updatedTransactions };
+      }
+      return group;
+    });
+    setGroups(updatedGroups);
+    setSelectedGroup(updatedGroups.find(g => g.id === groupId));
   };
 
   const handleExport = () => {
@@ -57,7 +97,13 @@ export function App() {
 
 
   if (selectedGroup) {
-    return <GroupView group={selectedGroup} onBack={handleBackToGroups} />;
+    return <GroupView
+      group={selectedGroup}
+      onBack={handleBackToGroups}
+      onParticipantAdd={(participantName) => handleParticipantAdd(selectedGroup.id, participantName)}
+      onParticipantRemove={(participantId) => handleParticipantRemove(selectedGroup.id, participantId)}
+      onTransactionAdd={(transaction) => handleTransactionAdd(selectedGroup.id, transaction)}
+    />;
   }
 
   return (

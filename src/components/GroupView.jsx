@@ -5,40 +5,27 @@ import { CreateTransactionForm } from './CreateTransactionForm';
 import { TransactionList } from './TransactionList';
 import { BalanceList } from './BalanceList';
 import { SettlementList } from './SettlementList';
-import { Transaction } from '../models/Transaction';
 import { calculateBalances } from '../logic/expenseCalculator';
 import { calculateSettlements } from '../logic/settlementCalculator';
 
-export function GroupView({ group, onBack }) {
-  const [participants, setParticipants] = useState(group.participants);
-  const [transactions, setTransactions] = useState([]);
+export function GroupView({ group, onBack, onParticipantAdd, onParticipantRemove, onTransactionAdd }) {
   const [balances, setBalances] = useState(new Map());
   const [settlements, setSettlements] = useState([]);
 
   useEffect(() => {
-    const newBalances = calculateBalances(transactions, participants);
+    const newBalances = calculateBalances(group.transactions, group.participants);
     setBalances(newBalances);
 
     const newSettlements = calculateSettlements(newBalances);
     setSettlements(newSettlements);
-  }, [transactions, participants]);
+  }, [group]);
 
   const handleParticipantAdd = (participantName) => {
-    if (participants.some(p => p.name === participantName)) {
+    if (group.participants.some(p => p.name === participantName)) {
       alert(`Participant "${participantName}" already exists.`);
       return;
     }
-    const newParticipant = { id: crypto.randomUUID(), name: participantName };
-    setParticipants([...participants, newParticipant]);
-  };
-
-  const handleParticipantRemove = (participantId) => {
-    setParticipants(participants.filter(p => p.id !== participantId));
-  };
-
-  const handleTransactionAdd = ({ description, total, payers, beneficiaries }) => {
-    const newTransaction = new Transaction(description, total, payers, beneficiaries);
-    setTransactions([...transactions, newTransaction]);
+    onParticipantAdd(participantName);
   };
 
   return (
@@ -60,23 +47,23 @@ export function GroupView({ group, onBack }) {
             <h3 class="title is-5">Participants</h3>
             <AddParticipantForm onParticipantAdd={handleParticipantAdd} />
             <div class="mt-4">
-              <ParticipantList participants={participants} onParticipantRemove={handleParticipantRemove} />
+              <ParticipantList participants={group.participants} onParticipantRemove={onParticipantRemove} />
             </div>
             <div class="mt-4">
               <h3 class="title is-5">Add Transaction</h3>
-              <CreateTransactionForm participants={participants} onTransactionAdd={handleTransactionAdd} />
+              <CreateTransactionForm participants={group.participants} onTransactionAdd={onTransactionAdd} />
             </div>
           </div>
           <div class="column">
             <h3 class="title is-5">Transactions</h3>
             <div class="mt-4">
-              <TransactionList transactions={transactions} />
+              <TransactionList transactions={group.transactions} />
             </div>
             <div class="mt-4">
-              <BalanceList balances={balances} participants={participants} />
+              <BalanceList balances={balances} participants={group.participants} />
             </div>
             <div class="mt-4">
-              <SettlementList settlements={settlements} participants={participants} />
+              <SettlementList settlements={settlements} participants={group.participants} />
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ export class Group {
     this.id = crypto.randomUUID();
     this.name = name;
     this.participants = [];
+    this.transactions = [];
   }
 
   addParticipant(name) {
