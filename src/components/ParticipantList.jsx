@@ -2,14 +2,24 @@ export function ParticipantList({ participants, onParticipantRemove }) {
   return (
     <div class="list" role="list" data-testid="participant-list">
       {participants.map((participant) => (
-        <div class="list-item" key={participant.id}>
-          <span>{participant.name}</span>
-          <button
-            class="button is-small is-danger is-outlined"
-            onClick={() => onParticipantRemove(participant.id)}
-          >
-            Remove
-          </button>
+        <div class="box" key={participant.id}>
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <p>{participant.name}</p>
+              </div>
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <button
+                  class="button is-danger"
+                  onClick={() => onParticipantRemove(participant.id)}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       ))}
     </div>

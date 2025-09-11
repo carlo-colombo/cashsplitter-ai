@@ -1,15 +1,25 @@
 export function GroupList({ groups, onGroupSelect }) {
   return (
-    <div class="list">
+    <div>
       {groups.map((group) => (
-        <div class="list-item" key={group.id}>
-          <span>{group.name}</span>
-          <button
-            class="button is-small is-link is-outlined"
-            onClick={() => onGroupSelect(group)}
-          >
-            View
-          </button>
+        <div class="box" key={group.id}>
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <p class="title is-5">{group.name}</p>
+              </div>
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <button
+                  class="button is-link"
+                  onClick={() => onGroupSelect(group)}
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       ))}
     </div>
