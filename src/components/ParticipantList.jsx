@@ -1,6 +1,6 @@
 export function ParticipantList({ participants, onParticipantRemove }) {
-  return (
-    <div>
+  return
+    <div class="list" role="list" data-testid="participant-list">
       {participants.map((participant) => (
         <div class="box" key={participant.id}>
           <div class="level">

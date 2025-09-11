@@ -24,6 +24,10 @@ export function GroupView({ group, onBack }) {
   }, [transactions, participants]);
 
   const handleParticipantAdd = (participantName) => {
+    if (participants.some(p => p.name === participantName)) {
+      alert(`Participant "${participantName}" already exists.`);
+      return;
+    }
     const newParticipant = { id: crypto.randomUUID(), name: participantName };
     setParticipants([...participants, newParticipant]);
   };
