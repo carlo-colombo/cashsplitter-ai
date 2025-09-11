@@ -24,7 +24,7 @@ describe('GroupView', () => {
     // Wait for the DOM to update
     await waitFor(() => {
       const participantList = screen.getByTestId('participant-list');
-      const participants = participantList.querySelectorAll('.list-item');
+      const participants = participantList.querySelectorAll('.box');
       // There should only be one Alice
       expect(participants.length).toBe(1);
     });
