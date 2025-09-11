@@ -47,9 +47,11 @@ export function CreateTransactionForm({ participants, onTransactionAdd }) {
       payers: payers.filter(p => p.amount > 0),
       beneficiaries: beneficiaries.map(id => ({ participantId: id })),
     });
-    // Reset form can be improved
+    // Reset form
     setDescription('');
     setTotal(0);
+    setPayers(participants.map(p => ({ participantId: p.id, amount: 0 })));
+    setBeneficiaries(participants.map(p => p.id));
   };
 
   return (
