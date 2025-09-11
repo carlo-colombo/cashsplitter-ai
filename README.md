@@ -2,6 +2,8 @@
 
 A simple web application to manage and split expenses within a group. This application allows you to create groups, add participants, record transactions, and calculate who owes whom.
 
+[**Live Demo**](https://carlo-colombo.github.io/cashsplitter-ai/)
+
 ## Features
 
 - **Create and manage groups:** Easily create new groups for different events or purposes.
