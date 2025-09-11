@@ -1,4 +1,9 @@
-export function GroupList({ groups, onGroupSelect }) {
+import { useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
+
+export function GroupList() {
+  const { groups, handleGroupSelect } = useContext(AppContext);
+
   return (
     <div>
       {groups.map((group) => (
@@ -13,7 +18,7 @@ export function GroupList({ groups, onGroupSelect }) {
               <div class="level-item">
                 <button
                   class="button is-link"
-                  onClick={() => onGroupSelect(group)}
+                  onClick={() => handleGroupSelect(group)}
                 >
                   View
                 </button>

@@ -1,7 +1,13 @@
-export function TransactionList({ transactions }) {
+import { useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
+
+export function TransactionList() {
+  const { selectedGroup } = useContext(AppContext);
+  const { transactions } = selectedGroup;
+
   return (
     <div>
-      {transactions.map((transaction) => (
+      {(transactions || []).map((transaction) => (
         <div class="box" key={transaction.id}>
           <div class="level">
             <div class="level-left">

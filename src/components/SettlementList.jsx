@@ -1,4 +1,10 @@
-export function SettlementList({ settlements, participants }) {
+import { useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
+
+export function SettlementList() {
+  const { selectedGroup, settlements } = useContext(AppContext);
+  const { participants } = selectedGroup;
+
   const getParticipantName = (participantId) => {
     const participant = participants.find((p) => p.id === participantId);
     return participant ? participant.name : 'Unknown';

@@ -1,55 +1,41 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
 import { AddParticipantForm } from './AddParticipantForm';
 import { ParticipantList } from './ParticipantList';
 import { CreateTransactionForm } from './CreateTransactionForm';
 import { TransactionList } from './TransactionList';
 import { BalanceList } from './BalanceList';
 import { SettlementList } from './SettlementList';
-import { Transaction } from '../models/Transaction';
-import { calculateBalances } from '../logic/expenseCalculator';
-import { calculateSettlements } from '../logic/settlementCalculator';
 
-export function GroupView({ group, onBack }) {
-  const [participants, setParticipants] = useState(group.participants);
-  const [transactions, setTransactions] = useState([]);
-  const [balances, setBalances] = useState(new Map());
-  const [settlements, setSettlements] = useState([]);
+export function GroupView() {
+  const {
+    selectedGroup,
+    handleBackToGroups,
+    error,
+    clearError,
+  } = useContext(AppContext);
 
-  useEffect(() => {
-    const newBalances = calculateBalances(transactions, participants);
-    setBalances(newBalances);
+  if (!selectedGroup) {
+    return null;
+  }
 
-    const newSettlements = calculateSettlements(newBalances);
-    setSettlements(newSettlements);
-  }, [transactions, participants]);
-
-  const handleParticipantAdd = (participantName) => {
-    if (participants.some(p => p.name === participantName)) {
-      alert(`Participant "${participantName}" already exists.`);
-      return;
-    }
-    const newParticipant = { id: crypto.randomUUID(), name: participantName };
-    setParticipants([...participants, newParticipant]);
-  };
-
-  const handleParticipantRemove = (participantId) => {
-    setParticipants(participants.filter(p => p.id !== participantId));
-  };
-
-  const handleTransactionAdd = ({ description, total, payers, beneficiaries }) => {
-    const newTransaction = new Transaction(description, total, payers, beneficiaries);
-    setTransactions([...transactions, newTransaction]);
-  };
+  const { name, participants, transactions } = selectedGroup;
 
   return (
     <div class="container">
       <section class="section">
+        {error && (
+          <div class="notification is-danger">
+            <button class="delete" onClick={clearError}></button>
+            {error}
+          </div>
+        )}
         <div class="level">
           <div class="level-left">
-            <h2 class="title is-4">Group: {group.name}</h2>
+            <h2 class="title is-4">Group: {name}</h2>
           </div>
           <div class="level-right">
-            <button class="button" onClick={onBack}>
+            <button class="button" onClick={handleBackToGroups}>
               Back to Groups
             </button>
           </div>
@@ -58,25 +44,25 @@ export function GroupView({ group, onBack }) {
         <div class="columns">
           <div class="column is-one-third">
             <h3 class="title is-5">Participants</h3>
-            <AddParticipantForm onParticipantAdd={handleParticipantAdd} />
+            <AddParticipantForm />
             <div class="mt-4">
-              <ParticipantList participants={participants} onParticipantRemove={handleParticipantRemove} />
+              <ParticipantList />
             </div>
             <div class="mt-4">
               <h3 class="title is-5">Add Transaction</h3>
-              <CreateTransactionForm participants={participants} onTransactionAdd={handleTransactionAdd} />
+              <CreateTransactionForm />
             </div>
           </div>
           <div class="column">
             <h3 class="title is-5">Transactions</h3>
             <div class="mt-4">
-              <TransactionList transactions={transactions} />
+              <TransactionList />
             </div>
             <div class="mt-4">
-              <BalanceList balances={balances} participants={participants} />
+              <BalanceList />
             </div>
             <div class="mt-4">
-              <SettlementList settlements={settlements} participants={participants} />
+              <SettlementList />
             </div>
           </div>
         </div>

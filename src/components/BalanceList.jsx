@@ -1,4 +1,10 @@
-export function BalanceList({ balances, participants }) {
+import { useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
+
+export function BalanceList() {
+  const { selectedGroup, balances } = useContext(AppContext);
+  const { participants } = selectedGroup;
+
   const getParticipantName = (participantId) => {
     const participant = participants.find((p) => p.id === participantId);
     return participant ? participant.name : 'Unknown';

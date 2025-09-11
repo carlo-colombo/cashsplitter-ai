@@ -1,4 +1,10 @@
-export function ParticipantList({ participants, onParticipantRemove }) {
+import { useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
+
+export function ParticipantList() {
+  const { selectedGroup, handleParticipantRemove } = useContext(AppContext);
+  const { participants } = selectedGroup;
+
   return (
     <div class="list" role="list" data-testid="participant-list">
       {participants.map((participant) => (
@@ -13,7 +19,7 @@ export function ParticipantList({ participants, onParticipantRemove }) {
               <div class="level-item">
                 <button
                   class="button is-danger"
-                  onClick={() => onParticipantRemove(participant.id)}
+                  onClick={() => handleParticipantRemove(participant.id)}
                 >
                   Remove
                 </button>

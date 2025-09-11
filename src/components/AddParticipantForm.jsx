@@ -1,12 +1,14 @@
-import { useState } from 'preact/hooks';
+import { useState, useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
 
-export function AddParticipantForm({ onParticipantAdd }) {
+export function AddParticipantForm() {
+  const { handleParticipantAdd } = useContext(AppContext);
   const [participantName, setParticipantName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (participantName.trim()) {
-      onParticipantAdd(participantName);
+      handleParticipantAdd(participantName);
       setParticipantName('');
     }
   };

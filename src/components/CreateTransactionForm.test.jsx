@@ -1,21 +1,25 @@
-import { render, fireEvent, screen } from '@testing-library/preact';
+import { fireEvent, screen, render } from '@testing-library/preact';
 import { describe, it, expect, vi } from 'vitest';
 import { CreateTransactionForm } from './CreateTransactionForm';
+import { AppContext } from '../contexts/AppContext';
+
+const participants = [
+  { id: '1', name: 'Alice' },
+  { id: '2', name: 'Bob' },
+];
 
 describe('CreateTransactionForm', () => {
-  const participants = [
-    { id: '1', name: 'Alice' },
-    { id: '2', name: 'Bob' },
-  ];
-
   it('should allow entering decimal values for total and payer amounts', async () => {
     const handleTransactionAdd = vi.fn();
-    render(
-      <CreateTransactionForm
-        participants={participants}
-        onTransactionAdd={handleTransactionAdd}
-      />
-    );
+    const providerProps = {
+      selectedGroup: { participants },
+      handleTransactionAdd,
+    };
+    render(<CreateTransactionForm />, {
+      wrapper: ({ children }) => (
+        <AppContext.Provider value={providerProps}>{children}</AppContext.Provider>
+      ),
+    });
 
     const totalInput = screen.getByLabelText('Total Amount');
     await fireEvent.input(totalInput, { target: { value: '123.45' } });
@@ -46,12 +50,15 @@ describe('CreateTransactionForm', () => {
 
   it('should reset the form after successful submission', async () => {
     const handleTransactionAdd = vi.fn();
-    render(
-      <CreateTransactionForm
-        participants={participants}
-        onTransactionAdd={handleTransactionAdd}
-      />
-    );
+    const providerProps = {
+      selectedGroup: { participants },
+      handleTransactionAdd,
+    };
+    render(<CreateTransactionForm />, {
+      wrapper: ({ children }) => (
+        <AppContext.Provider value={providerProps}>{children}</AppContext.Provider>
+      ),
+    });
 
     // Fill out the form
     const descriptionInput = screen.getByLabelText('Description');

@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useContext } from 'preact/hooks';
+import { AppContext } from '../contexts/AppContext';
 
-export function CreateTransactionForm({ participants, onTransactionAdd }) {
+export function CreateTransactionForm() {
+  const { selectedGroup, handleTransactionAdd } = useContext(AppContext);
+  const { participants } = selectedGroup;
+
   const [description, setDescription] = useState('');
   const [total, setTotal] = useState(0);
   const [payers, setPayers] = useState([]);
@@ -41,7 +45,7 @@ export function CreateTransactionForm({ participants, onTransactionAdd }) {
       return;
     }
     setError('');
-    onTransactionAdd({
+    handleTransactionAdd({
       description,
       total,
       payers: payers.filter(p => p.amount > 0),
