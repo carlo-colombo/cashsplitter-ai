@@ -1,5 +1,6 @@
 import { render } from 'preact'
 import './index.css'
 import { App } from './app.jsx'
+import { StateProvider } from './context/StateContext';
 
-render(<App />, document.getElementById('app'))
+render(<StateProvider><App /></StateProvider>, document.getElementById('app'))

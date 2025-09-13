@@ -1,12 +1,14 @@
 import { useState } from 'preact/hooks';
+import { useAppState } from '../context/StateContext';
 
-export function CreateGroupForm({ onGroupCreate }) {
+export function CreateGroupForm() {
   const [groupName, setGroupName] = useState('');
+  const { handleGroupCreate } = useAppState();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (groupName.trim()) {
-      onGroupCreate(groupName);
+      handleGroupCreate(groupName);
       setGroupName('');
     }
   };
