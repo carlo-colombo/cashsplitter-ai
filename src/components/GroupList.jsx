@@ -1,7 +1,13 @@
 import { useAppState } from '../context/StateContext';
 
 export function GroupList() {
-  const { groups, handleGroupSelect } = useAppState();
+  const { groups, handleGroupSelect, handleGroupDelete } = useAppState();
+
+  const handleDeleteClick = (groupId) => {
+    if (window.confirm('Are you sure you want to delete this group?')) {
+      handleGroupDelete(groupId);
+    }
+  };
 
   return (
     <div>
@@ -20,6 +26,14 @@ export function GroupList() {
                   onClick={() => handleGroupSelect(group)}
                 >
                   View
+                </button>
+              </div>
+              <div class="level-item">
+                <button
+                  class="button is-danger"
+                  onClick={() => handleDeleteClick(group.id)}
+                >
+                  Delete
                 </button>
               </div>
             </div>
