@@ -14,7 +14,7 @@ describe('GroupView', () => {
     group.participants = [{ id: '1', name: 'Alice' }];
 
     useAppState.mockReturnValue({
-      selectedGroup: group,
+      groups: [group],
       handleBackToGroups: vi.fn(),
       handleParticipantAdd: vi.fn(),
       handleParticipantRemove: vi.fn(),
@@ -25,7 +25,7 @@ describe('GroupView', () => {
     const alertMock = vi.fn();
     window.alert = alertMock;
 
-    render(<GroupView />);
+    render(<GroupView groupId={group.id} />);
 
     const input = screen.getByPlaceholderText('New participant name');
     const addButton = screen.getByText('Add Participant');

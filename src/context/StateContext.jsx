@@ -1,5 +1,6 @@
 import { createContext } from 'preact';
 import { useContext, useState } from 'preact/hooks';
+import { route } from 'preact-router';
 import { Group } from '../models/Group';
 import { Transaction } from '../models/Transaction';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -8,7 +9,6 @@ const StateContext = createContext();
 
 export const StateProvider = ({ children }) => {
   const [groups, setGroups] = useLocalStorage('groups', []);
-  const [selectedGroup, setSelectedGroup] = useState(null);
 
   const handleGroupCreate = (groupName) => {
     const newGroup = new Group(groupName);
@@ -16,11 +16,11 @@ export const StateProvider = ({ children }) => {
   };
 
   const handleGroupSelect = (group) => {
-    setSelectedGroup(group);
+    route(`/group/${group.id}`);
   };
 
   const handleBackToGroups = () => {
-    setSelectedGroup(null);
+    route('/');
   };
 
   const handleParticipantAdd = (groupId, participantName) => {
@@ -32,7 +32,6 @@ export const StateProvider = ({ children }) => {
       return group;
     });
     setGroups(updatedGroups);
-    setSelectedGroup(updatedGroups.find(g => g.id === groupId));
   };
 
   const handleParticipantRemove = (groupId, participantId) => {
@@ -44,7 +43,6 @@ export const StateProvider = ({ children }) => {
       return group;
     });
     setGroups(updatedGroups);
-    setSelectedGroup(updatedGroups.find(g => g.id === groupId));
   };
 
   const handleTransactionAdd = (groupId, { description, total, payers, beneficiaries }) => {
@@ -57,7 +55,6 @@ export const StateProvider = ({ children }) => {
       return group;
     });
     setGroups(updatedGroups);
-    setSelectedGroup(updatedGroups.find(g => g.id === groupId));
   };
 
   const handleExport = () => {
@@ -97,7 +94,6 @@ export const StateProvider = ({ children }) => {
 
   const value = {
     groups,
-    selectedGroup,
     handleGroupCreate,
     handleGroupSelect,
     handleBackToGroups,
