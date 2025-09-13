@@ -9,14 +9,16 @@ import { SettlementList } from './SettlementList';
 import { calculateBalances } from '../logic/expenseCalculator';
 import { calculateSettlements } from '../logic/settlementCalculator';
 
-export function GroupView() {
+export function GroupView({ groupId }) {
   const {
-    selectedGroup: group,
+    groups,
     handleBackToGroups,
     handleParticipantAdd: onParticipantAdd,
     handleParticipantRemove,
     handleTransactionAdd: onTransactionAdd,
   } = useAppState();
+
+  const group = groups.find(g => g.id === groupId);
 
   const [balances, setBalances] = useState(new Map());
   const [settlements, setSettlements] = useState([]);
@@ -32,7 +34,7 @@ export function GroupView() {
   }, [group]);
 
   if (!group) {
-    return null;
+    return <div>Group not found</div>;
   }
 
   const handleParticipantAdd = (participantName) => {
