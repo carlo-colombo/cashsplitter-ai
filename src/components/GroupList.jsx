@@ -1,4 +1,8 @@
-export function GroupList({ groups, onGroupSelect }) {
+import { useAppState } from '../context/StateContext';
+
+export function GroupList() {
+  const { groups, handleGroupSelect } = useAppState();
+
   return (
     <div>
       {groups.map((group) => (
@@ -13,7 +17,7 @@ export function GroupList({ groups, onGroupSelect }) {
               <div class="level-item">
                 <button
                   class="button is-link"
-                  onClick={() => onGroupSelect(group)}
+                  onClick={() => handleGroupSelect(group)}
                 >
                   View
                 </button>

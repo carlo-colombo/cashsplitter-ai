@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useAppState } from '../context/StateContext';
 import { AddParticipantForm } from './AddParticipantForm';
 import { ParticipantList } from './ParticipantList';
 import { CreateTransactionForm } from './CreateTransactionForm';
@@ -8,24 +9,46 @@ import { SettlementList } from './SettlementList';
 import { calculateBalances } from '../logic/expenseCalculator';
 import { calculateSettlements } from '../logic/settlementCalculator';
 
-export function GroupView({ group, onBack, onParticipantAdd, onParticipantRemove, onTransactionAdd }) {
+export function GroupView() {
+  const {
+    selectedGroup: group,
+    handleBackToGroups,
+    handleParticipantAdd: onParticipantAdd,
+    handleParticipantRemove,
+    handleTransactionAdd: onTransactionAdd,
+  } = useAppState();
+
   const [balances, setBalances] = useState(new Map());
   const [settlements, setSettlements] = useState([]);
 
   useEffect(() => {
-    const newBalances = calculateBalances(group.transactions, group.participants);
-    setBalances(newBalances);
+    if (group) {
+      const newBalances = calculateBalances(group.transactions, group.participants);
+      setBalances(newBalances);
 
-    const newSettlements = calculateSettlements(newBalances);
-    setSettlements(newSettlements);
+      const newSettlements = calculateSettlements(newBalances);
+      setSettlements(newSettlements);
+    }
   }, [group]);
+
+  if (!group) {
+    return null;
+  }
 
   const handleParticipantAdd = (participantName) => {
     if (group.participants.some(p => p.name === participantName)) {
       alert(`Participant "${participantName}" already exists.`);
       return;
     }
-    onParticipantAdd(participantName);
+    onParticipantAdd(group.id, participantName);
+  };
+
+  const handleTransactionSubmit = (transaction) => {
+    onTransactionAdd(group.id, transaction);
+  };
+
+  const handleParticipantRemoveClick = (participantId) => {
+    handleParticipantRemove(group.id, participantId);
   };
 
   return (
@@ -36,7 +59,7 @@ export function GroupView({ group, onBack, onParticipantAdd, onParticipantRemove
             <h2 class="title is-4">Group: {group.name}</h2>
           </div>
           <div class="level-right">
-            <button class="button" onClick={onBack}>
+            <button class="button" onClick={handleBackToGroups}>
               Back to Groups
             </button>
           </div>
@@ -47,11 +70,11 @@ export function GroupView({ group, onBack, onParticipantAdd, onParticipantRemove
             <h3 class="title is-5">Participants</h3>
             <AddParticipantForm onParticipantAdd={handleParticipantAdd} />
             <div class="mt-4">
-              <ParticipantList participants={group.participants} onParticipantRemove={onParticipantRemove} />
+              <ParticipantList participants={group.participants} onParticipantRemove={handleParticipantRemoveClick} />
             </div>
             <div class="mt-4">
               <h3 class="title is-5">Add Transaction</h3>
-              <CreateTransactionForm participants={group.participants} onTransactionAdd={onTransactionAdd} />
+              <CreateTransactionForm participants={group.participants} onTransactionAdd={handleTransactionSubmit} />
             </div>
           </div>
           <div class="column">

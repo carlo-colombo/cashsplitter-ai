@@ -1,11 +1,18 @@
 import { render, fireEvent, screen } from '@testing-library/preact';
 import { describe, it, expect, vi } from 'vitest';
 import { CreateGroupForm } from './CreateGroupForm';
+import { useAppState } from '../context/StateContext';
+
+vi.mock('../context/StateContext', () => ({
+  useAppState: vi.fn(),
+}));
 
 describe('CreateGroupForm', () => {
   it('should call onGroupCreate with the new group name', async () => {
     const handleGroupCreate = vi.fn();
-    render(<CreateGroupForm onGroupCreate={handleGroupCreate} />);
+    useAppState.mockReturnValue({ handleGroupCreate });
+
+    render(<CreateGroupForm />);
 
     const input = screen.getByPlaceholderText('New group name');
     const createButton = screen.getByText('Create Group');
@@ -19,7 +26,9 @@ describe('CreateGroupForm', () => {
 
   it('should not call onGroupCreate if the group name is empty', async () => {
     const handleGroupCreate = vi.fn();
-    render(<CreateGroupForm onGroupCreate={handleGroupCreate} />);
+    useAppState.mockReturnValue({ handleGroupCreate });
+
+    render(<CreateGroupForm />);
 
     const createButton = screen.getByText('Create Group');
 
