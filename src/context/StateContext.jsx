@@ -90,6 +90,11 @@ export const StateProvider = ({ children }) => {
     }
   };
 
+  const handleGroupDelete = (groupId) => {
+    const updatedGroups = groups.filter(group => group.id !== groupId);
+    setGroups(updatedGroups);
+  };
+
   const value = {
     groups,
     selectedGroup,
@@ -99,6 +104,7 @@ export const StateProvider = ({ children }) => {
     handleParticipantAdd,
     handleParticipantRemove,
     handleTransactionAdd,
+    handleGroupDelete,
     handleExport,
     handleImport,
   };
