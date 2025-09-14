@@ -1,4 +1,4 @@
-# Group Expense Splitter
+# Cashsplitter
 
 A simple web application to manage and split expenses within a group. This application allows you to create groups, add participants, record transactions, and calculate who owes whom.
 

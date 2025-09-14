@@ -14,7 +14,7 @@ export function App({ history }) {
         <div class="columns is-centered">
           <div class="column is-half">
             <section class="section">
-              <h1 class="title">Expense Splitter</h1>
+              <h1 class="title">Cashsplitter</h1>
               <p class="subtitle">
                 Create groups and split expenses with your friends.
               </p>
