@@ -13,9 +13,10 @@ export function App({ history }) {
       <div path="/" class="container">
         <div class="columns is-centered">
           <div class="column is-half">
-            <section class="py-4">
-              <h1 class="title mb-2">Expense Splitter</h1>
-              <p class="subtitle mb-2">
+
+            <section class="section">
+              <h1 class="title">Cashsplitter</h1>
+              <p class="subtitl
                 Create groups and split expenses with your friends.
               </p>
               <div class="buttons">
