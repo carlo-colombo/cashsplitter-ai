@@ -13,9 +13,10 @@ export function App({ history }) {
       <div path="/" class="container">
         <div class="columns is-centered">
           <div class="column is-half">
+
             <section class="section">
               <h1 class="title">Cashsplitter</h1>
-              <p class="subtitle">
+              <p class="subtitl
                 Create groups and split expenses with your friends.
               </p>
               <div class="buttons">
@@ -37,10 +38,10 @@ export function App({ history }) {
                 </div>
               </div>
             </section>
-            <section class="section">
-              <h2 class="title is-4">My Groups</h2>
+            <section class="py-4">
+              <h2 class="title is-4 mb-2">My Groups</h2>
               <CreateGroupForm />
-              <div class="mt-4">
+              <div class="mt-2">
                 <GroupList />
               </div>
             </section>
