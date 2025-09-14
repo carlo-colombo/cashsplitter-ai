@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'preact/hooks';
 
-export function useLocalStorage(key, initialValue) {
+export function useLocalStorage(key, initialValue, reviver) {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ? JSON.parse(item, reviver) : initialValue;
     } catch (error) {
       console.error(error);
       return initialValue;

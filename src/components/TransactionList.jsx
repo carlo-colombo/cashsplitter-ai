@@ -6,7 +6,14 @@ export function TransactionList({ transactions }) {
           <div class="level">
             <div class="level-left">
               <div class="level-item">
-                <p>{transaction.description}</p>
+                <div>
+                  <p>{transaction.description}</p>
+                  {transaction.date && (
+                    <p class="is-size-7 has-text-grey">
+                      {new Date(transaction.date).toLocaleString()}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
             <div class="level-right">

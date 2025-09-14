@@ -7,8 +7,17 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const StateContext = createContext();
 
+const dateReviver = (key, value) => {
+  // This regex matches the ISO 8601 format that Date.toJSON() produces.
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+  if (typeof value === 'string' && isoDateRegex.test(value)) {
+    return new Date(value);
+  }
+  return value;
+};
+
 export const StateProvider = ({ children }) => {
-  const [groups, setGroups] = useLocalStorage('groups', []);
+  const [groups, setGroups] = useLocalStorage('groups', [], dateReviver);
 
   const handleGroupCreate = (groupName) => {
     const newGroup = new Group(groupName);
@@ -49,6 +58,7 @@ export const StateProvider = ({ children }) => {
     const updatedGroups = groups.map(group => {
       if (group.id === groupId) {
         const newTransaction = new Transaction(description, total, payers, beneficiaries);
+        newTransaction.date = new Date(); // Explicitly set the date
         const updatedTransactions = [...group.transactions, newTransaction];
         return { ...group, transactions: updatedTransactions };
       }
