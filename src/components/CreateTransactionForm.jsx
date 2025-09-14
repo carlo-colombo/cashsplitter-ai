@@ -21,6 +21,14 @@ export function CreateTransactionForm({ participants, onTransactionAdd }) {
     setPayers(newPayers);
   };
 
+  const setSolePayer = (participantId) => {
+    const newPayers = participants.map(p => ({
+      participantId: p.id,
+      amount: p.id === participantId ? total : 0,
+    }));
+    setPayers(newPayers);
+  };
+
   const handleBeneficiaryChange = (participantId) => {
     const newBeneficiaries = beneficiaries.includes(participantId)
       ? beneficiaries.filter(id => id !== participantId)
@@ -78,6 +86,13 @@ export function CreateTransactionForm({ participants, onTransactionAdd }) {
                 <div class="field has-addons" key={participant.id}>
                   <p class="control">
                     <a class="button is-static">{participant.name}</a>
+                  </p>
+                  <p class="control">
+                    <button type="button" class="button is-small" onClick={() => setSolePayer(participant.id)}>
+                      <span class="icon is-small">
+                        <i class="fas fa-user-check"></i>
+                      </span>
+                    </button>
                   </p>
                   <p class="control">
                     <input
