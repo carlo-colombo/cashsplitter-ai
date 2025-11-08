@@ -8,20 +8,23 @@ vi.mock('../context/StateContext', () => ({
 }));
 
 describe('CreateGroupForm', () => {
-  it('should call onGroupCreate with the new group name', async () => {
+  it('should call handleGroupCreate with the group name and participants', async () => {
     const handleGroupCreate = vi.fn();
     useAppState.mockReturnValue({ handleGroupCreate });
 
     render(<CreateGroupForm />);
 
-    const input = screen.getByPlaceholderText('New group name');
+    const groupNameInput = screen.getByPlaceholderText('New group name');
+    const participantsInput = screen.getByPlaceholderText('Participant names (comma-separated)');
     const createButton = screen.getByText('Create Group');
 
-    await fireEvent.input(input, { target: { value: 'New Awesome Group' } });
+    await fireEvent.input(groupNameInput, { target: { value: 'New Awesome Group' } });
+    await fireEvent.input(participantsInput, { target: { value: 'Alice, Bob' } });
     await fireEvent.click(createButton);
 
-    expect(handleGroupCreate).toHaveBeenCalledWith('New Awesome Group');
-    expect(input.value).toBe('');
+    expect(handleGroupCreate).toHaveBeenCalledWith('New Awesome Group', ['Alice', 'Bob']);
+    expect(groupNameInput.value).toBe('');
+    expect(participantsInput.value).toBe('');
   });
 
   it('should not call onGroupCreate if the group name is empty', async () => {

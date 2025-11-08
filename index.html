@@ -1,62 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VSA 2: Group Creation MVP</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-</head>
-<body>
-    <div id="app-content" hx-get="./" hx-trigger="load-from-sw" hx-swap="innerHTML">
-        <!-- Service Worker will populate this on page load -->
-    </div>
-
-    <div id="new-group-modal" class="modal">
-        <div class="modal-background" onclick="App.closeModal('new-group-modal')"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Create New Group</p>
-                <button class="delete" aria-label="close" onclick="App.closeModal('new-group-modal')"></button>
-            </header>
-            <section class="modal-card-body">
-                <form id="new-group-form" onsubmit="App.processGroupCreation(event); return false;">
-                    <div class="field">
-                        <label class="label">Group Name</label>
-                        <div class="control">
-                            <input class="input" type="text" name="groupName" placeholder="e.g., Holiday Trip" required>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Group Members</label>
-                        <div class="control">
-                            <input class="input" type="text" name="groupMembers" placeholder="Comma-separated names" required>
-                        </div>
-                    </div>
-                </form>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-success" type="submit" form="new-group-form">Save changes</button>
-                <button class="button" onclick="App.closeModal('new-group-modal')">Cancel</button>
-            </footer>
-        </div>
-    </div>
-
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
-    <script src="asp.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(function(registration) {
-                console.log('Service Worker registered with scope:', registration.scope);
-                return navigator.serviceWorker.ready;
-            }).then(function(registration) {
-                console.log('Service Worker is active.');
-                // Trigger the custom event to load the initial content ONLY when the SW is ready.
-                htmx.trigger(document.getElementById('app-content'), 'load-from-sw');
-            }).catch(function(error) {
-                console.error('Service Worker registration failed:', error);
-            });
-        }
-    </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cashsplitter</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
