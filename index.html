@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 <body>
-    <div id="app-content" hx-get="/" hx-trigger="load-from-sw" hx-swap="innerHTML">
+    <div id="app-content" hx-get="./" hx-trigger="load-from-sw" hx-swap="innerHTML">
         <!-- Service Worker will populate this on page load -->
     </div>
 
@@ -46,7 +46,7 @@
     <script src="asp.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+            navigator.serviceWorker.register('./sw.js').then(function(registration) {
                 console.log('Service Worker registered with scope:', registration.scope);
                 return navigator.serviceWorker.ready;
             }).then(function(registration) {
