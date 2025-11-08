@@ -32,20 +32,26 @@ self.addEventListener('activate', event => {
         events: '++event_id,timestamp,eventType,aggregateId',
         projections: 'projection_key'
     });
-    console.log('Service Worker: LedgerDB initialized');
+
+    const dbOpenPromise = db.open().then(() => {
+        console.log('Service Worker: LedgerDB initialized');
+    });
 
     // vsa-2-fix: Add cache cleanup.
+    const cacheCleanupPromise = caches.keys().then(cacheNames => {
+        return Promise.all(
+            cacheNames.map(cacheName => {
+                if (cacheName !== CACHE_NAME) {
+                    console.log('Service Worker: deleting old cache:', cacheName);
+                    return caches.delete(cacheName);
+                }
+            })
+        );
+    });
+
     event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheName !== CACHE_NAME) {
-                        console.log('Service Worker: deleting old cache:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => self.clients.claim())
+        Promise.all([dbOpenPromise, cacheCleanupPromise])
+            .then(() => self.clients.claim())
     );
 });
 
