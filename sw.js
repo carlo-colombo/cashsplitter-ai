@@ -1,23 +1,22 @@
 // vsa-2: Implement a client-side server in the service worker.
 
-const CACHE_NAME = 'vsa-2-cache';
+// vsa-2-fix: Use relative paths for caching and routing to support deployment in subdirectories.
+
+const CACHE_NAME = 'vsa-2-cache-fix';
 const urlsToCache = [
-    '/',
-    '/index.html',
+    './',
+    './index.html',
     'https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css',
     'https://unpkg.com/htmx.org@1.9.10',
     'https://unpkg.com/dexie@3.2.4/dist/dexie.js',
-    '/asp.js'
+    './asp.js'
 ];
 
-// Use importScripts to make Dexie available in the service worker
 self.importScripts('https://unpkg.com/dexie@3.2.4/dist/dexie.js');
 let db;
 
 self.addEventListener('install', event => {
-    // Force the waiting service worker to become the active service worker.
     self.skipWaiting();
-
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -28,27 +27,24 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-    // Initialize the database when the service worker activates.
     db = new Dexie('LedgerDB');
     db.version(1).stores({
         events: '++event_id,timestamp,eventType,aggregateId',
         projections: 'projection_key'
     });
     console.log('Service Worker: LedgerDB initialized');
-
-    // Take control of all open clients (pages) as soon as the service worker activates.
     event.waitUntil(self.clients.claim());
 });
 
-// --- HTML Generation ---
 
 function renderHomeScreen() {
+    // Use a relative path for hx-get
     return `
         <section class="section">
             <div class="container">
                 <h1 class="title">Ledger Groups</h1>
                 <p class="subtitle">Available expense groups.</p>
-                <div id="group-list" hx-get="/components/group-list" hx-trigger="load, update-groups from:body" hx-swap="innerHTML">
+                <div id="group-list" hx-get="components/group-list" hx-trigger="load, update-groups from:body" hx-swap="innerHTML">
                     <!-- Group list will be loaded here -->
                 </div>
             </div>
@@ -101,14 +97,17 @@ async function renderGroupList() {
 
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
+    const basePath = new URL(self.registration.scope).pathname;
 
-    // Routing logic for dynamic content
-    if (url.pathname === '/') {
+    // --- Dynamic Content Routing ---
+    // Handles the root of the app, e.g., /repo/
+    if (url.pathname === basePath || url.pathname === basePath.slice(0, -1)) {
         event.respondWith(new Response(renderHomeScreen(), { headers: { 'Content-Type': 'text/html' } }));
         return;
     }
 
-    if (url.pathname === '/components/group-list') {
+    // Handles the component route, e.g., /repo/components/group-list
+    if (url.pathname === `${basePath}components/group-list`) {
         event.respondWith(
             renderGroupList().then(listHtml => {
                 return new Response(listHtml, { headers: { 'Content-Type': 'text/html' } });
@@ -117,7 +116,7 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Default cache-first strategy for other assets
+    // --- Static Asset Caching ---
     event.respondWith(
         caches.match(event.request)
             .then(response => {
