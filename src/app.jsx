@@ -3,6 +3,8 @@ import { useAppState } from './context/StateContext';
 import { CreateGroupForm } from './components/CreateGroupForm';
 import { GroupList } from './components/GroupList';
 import { GroupView } from './components/GroupView';
+import GroupDetail from './components/GroupDetail';
+import AddExpense from './components/AddExpense';
 import './app.css';
 
 export function App({ history }) {
@@ -47,6 +49,8 @@ export function App({ history }) {
           </div>
         </div>
       </div>
+      <AddExpense path="/group/:groupId/add-expense" />
+      <GroupDetail path="/group-detail/:groupId" />
       <GroupView path="/group/:groupId" />
     </Router>
   );

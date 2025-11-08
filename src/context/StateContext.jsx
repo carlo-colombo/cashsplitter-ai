@@ -4,11 +4,11 @@ import { route } from 'preact-router';
 import { Group } from '../models/Group';
 import { Transaction } from '../models/Transaction';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { createExpenseTransaction } from '../logic/transactions';
 
 const StateContext = createContext();
 
 const dateReviver = (key, value) => {
-  // This regex matches the ISO 8601 format that Date.toJSON() produces.
   const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   if (typeof value === 'string' && isoDateRegex.test(value)) {
     return new Date(value);
@@ -19,8 +19,9 @@ const dateReviver = (key, value) => {
 export const StateProvider = ({ children }) => {
   const [groups, setGroups] = useLocalStorage('groups', [], dateReviver);
 
-  const handleGroupCreate = (groupName) => {
+  const handleGroupCreate = (groupName, participantNames) => {
     const newGroup = new Group(groupName);
+    participantNames.forEach(name => newGroup.addParticipant(name));
     setGroups([...groups, newGroup]);
   };
 
@@ -57,8 +58,13 @@ export const StateProvider = ({ children }) => {
   const handleTransactionAdd = (groupId, { description, total, payers, beneficiaries }) => {
     const updatedGroups = groups.map(group => {
       if (group.id === groupId) {
+        const payerId = payers[0].participantId;
+        const beneficiaryIds = beneficiaries.map(b => b.participantId);
+        const postings = createExpenseTransaction(total, payerId, beneficiaryIds);
+
         const newTransaction = new Transaction(description, total, payers, beneficiaries);
-        newTransaction.date = new Date(); // Explicitly set the date
+        newTransaction.postings = postings;
+
         const updatedTransactions = [...group.transactions, newTransaction];
         return { ...group, transactions: updatedTransactions };
       }
