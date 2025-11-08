@@ -33,7 +33,20 @@ self.addEventListener('activate', event => {
         projections: 'projection_key'
     });
     console.log('Service Worker: LedgerDB initialized');
-    event.waitUntil(self.clients.claim());
+
+    // vsa-2-fix: Add cache cleanup.
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Service Worker: deleting old cache:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim())
+    );
 });
 
 
@@ -98,6 +111,17 @@ async function renderGroupList() {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
     const basePath = new URL(self.registration.scope).pathname;
+
+    // vsa-2-fix: Differentiate between navigation and other requests.
+    // On navigation, serve the app shell. On other requests, serve content.
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            caches.match('./index.html').then(response => {
+                return response || fetch(event.request);
+            })
+        );
+        return;
+    }
 
     // --- Dynamic Content Routing ---
     // Handles the root of the app, e.g., /repo/
